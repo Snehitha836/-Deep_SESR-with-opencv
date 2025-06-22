@@ -6,6 +6,7 @@
 # Interactive Robotics and Vision Lab (http://irvlab.cs.umn.edu/)
 """
 import os
+import cv2
 import time
 import numpy as np
 from glob import glob
@@ -84,3 +85,58 @@ else:
     print("\nSaved generated images in in {0}\n".format(samples_dir))
 
 
+img_path = test_paths[0]
+img_name = basename(img_path).split('.')[0]
+img_lrd = np.array(Image.open(img_path).resize(lr_res))
+im = np.expand_dims(preprocess(img_lrd), axis=0)
+
+# Inference time
+start = time.time()
+gen_op = generator.predict(im)
+inference_time = time.time() - start
+
+print(f"🕒 Inference time for '{img_name}': {inference_time:.4f} seconds")
+
+img_path = test_paths[1]
+img_name = basename(img_path).split('.')[0]
+img_lrd = np.array(Image.open(img_path).resize(lr_res))
+im = np.expand_dims(preprocess(img_lrd), axis=0)
+
+# Inference time
+start = time.time()
+gen_op = generator.predict(im)
+inference_time = time.time() - start
+
+print(f"🕒 Inference time for '{img_name}': {inference_time:.4f} seconds")
+
+img_path = test_paths[2]
+img_name = basename(img_path).split('.')[0]
+img_lrd = np.array(Image.open(img_path).resize(lr_res))
+im = np.expand_dims(preprocess(img_lrd), axis=0)
+
+# Inference time
+start = time.time()
+gen_op = generator.predict(im)
+inference_time = time.time() - start
+
+print(f"🕒 Inference time for '{img_name}': {inference_time:.4f} seconds")
+
+
+
+
+import numpy as np
+path=r"/Users/polakiramesh/PycharmProjects/Deep_SESR/data/output/keras_out/set_u17_SESR.png"
+image = cv2.imread(path)
+lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+l, a, b = cv2.split(lab)
+
+clahe = cv2.createCLAHE(clipLimit=15.0, tileGridSize=(8, 8))
+cl = clahe.apply(l)
+
+limg = cv2.merge((cl, a, b))
+enhanced = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
+
+combined = np.hstack((image, enhanced))
+cv2.imshow('Original vs CLAHE Enhanced (LAB)', combined)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
